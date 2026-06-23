@@ -1,0 +1,16 @@
+[package]
+name = "miniaudio-csharp-codegen"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# This crate exists ONLY to run its build script, which generates
+# csharp/Miniaudio/NativeMethods.g.cs from bindings/ma_wrap.h.
+# It ships nothing and links nothing.
+
+[lib]
+path = "src/lib.rs"
+
+[build-dependencies]
+bindgen = "0.71"
+csbindgen = "1.9"
