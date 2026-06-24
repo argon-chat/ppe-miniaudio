@@ -67,6 +67,8 @@ MA_WRAP_API int             ma_wrap_sound_is_playing(ma_sound_handle sound);
 MA_WRAP_API int             ma_wrap_sound_at_end(ma_sound_handle sound);
 /* frame index is 32-bit (≈12h at 48kHz) to stay blittable across the wasm boundary. */
 MA_WRAP_API int             ma_wrap_sound_seek_to_frame(ma_sound_handle sound, unsigned int frame);
+/* Fade between two linear volumes over `milliseconds`. volumeBeg < 0 = start at current volume. */
+MA_WRAP_API void            ma_wrap_sound_set_fade(ma_sound_handle sound, float volumeBeg, float volumeEnd, unsigned int milliseconds);
 
 /* ---- spatialization ---- */
 MA_WRAP_API void ma_wrap_sound_set_spatialization_enabled(ma_sound_handle sound, int enabled);

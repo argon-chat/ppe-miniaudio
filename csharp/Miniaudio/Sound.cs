@@ -27,6 +27,11 @@ public sealed unsafe class Sound : IDisposable
     public void SeekToFrame(uint frame)
         => MiniaudioEngine.Check(NativeMethods.ma_wrap_sound_seek_to_frame(H, frame), "sound_seek");
 
+    /// <summary>Fade linear volume <paramref name="from"/> → <paramref name="to"/> over
+    /// <paramref name="milliseconds"/>. <paramref name="from"/> &lt; 0 starts at the current volume.</summary>
+    public void Fade(float from, float to, uint milliseconds)
+        => NativeMethods.ma_wrap_sound_set_fade(H, from, to, milliseconds);
+
     // ---- spatialization ----
     public bool SpatializationEnabled { set => NativeMethods.ma_wrap_sound_set_spatialization_enabled(H, value ? 1 : 0); }
     public void SetPosition(float x, float y, float z) => NativeMethods.ma_wrap_sound_set_position(H, x, y, z);

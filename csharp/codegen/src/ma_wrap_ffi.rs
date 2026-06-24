@@ -78,6 +78,14 @@ unsafe extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 unsafe extern "C" {
+    pub fn ma_wrap_sound_set_fade(
+        sound: ma_sound_handle,
+        volumeBeg: f32,
+        volumeEnd: f32,
+        milliseconds: ::std::os::raw::c_uint,
+    );
+}
+unsafe extern "C" {
     pub fn ma_wrap_sound_set_spatialization_enabled(
         sound: ma_sound_handle,
         enabled: ::std::os::raw::c_int,

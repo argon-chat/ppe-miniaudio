@@ -158,6 +158,11 @@ int ma_wrap_sound_seek_to_frame(ma_sound_handle sound, unsigned int frame)
     return (int)ma_sound_seek_to_pcm_frame(SOUND(sound), (ma_uint64)frame);
 }
 
+void ma_wrap_sound_set_fade(ma_sound_handle sound, float volumeBeg, float volumeEnd, unsigned int milliseconds)
+{
+    ma_sound_set_fade_in_milliseconds(SOUND(sound), volumeBeg, volumeEnd, (ma_uint64)milliseconds);
+}
+
 /* ---- spatialization ---- */
 void ma_wrap_sound_set_spatialization_enabled(ma_sound_handle sound, int enabled)
 {

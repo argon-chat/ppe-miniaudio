@@ -78,6 +78,9 @@ namespace Miniaudio.Native
         [DllImport(__DllName, EntryPoint = "ma_wrap_sound_seek_to_frame", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         internal static extern int ma_wrap_sound_seek_to_frame(void* sound, uint frame);
 
+        [DllImport(__DllName, EntryPoint = "ma_wrap_sound_set_fade", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        internal static extern void ma_wrap_sound_set_fade(void* sound, float volumeBeg, float volumeEnd, uint milliseconds);
+
         [DllImport(__DllName, EntryPoint = "ma_wrap_sound_set_spatialization_enabled", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         internal static extern void ma_wrap_sound_set_spatialization_enabled(void* sound, int enabled);
 
