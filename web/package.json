@@ -1,0 +1,17 @@
+{
+  "name": "@ppe/miniaudio",
+  "version": "0.1.0",
+  "description": "miniaudio (engine + spatialization) compiled to WASM with a typed wrapper.",
+  "type": "module",
+  "main": "dist/ma.js",
+  "types": "dist/ma.d.ts",
+  "files": ["dist", "src"],
+  "scripts": {
+    "build:wasm": "bash build-wasm.sh",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}
