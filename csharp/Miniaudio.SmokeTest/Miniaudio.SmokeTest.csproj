@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- Only the .NET 10 runtime is installed locally; allow roll-forward. -->
+    <RollForward>Major</RollForward>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Miniaudio\Miniaudio.csproj" />
+  </ItemGroup>
+
+  <!-- Native libs + a test asset copied next to the exe so the resolver finds them. -->
+  <ItemGroup>
+    <None Include="..\..\runtimes\**\*.*"
+          Link="runtimes\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\miniaudio\data\16-44100-stereo.flac"
+          Link="data\16-44100-stereo.flac"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

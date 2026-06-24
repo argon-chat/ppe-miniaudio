@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Miniaudio</AssemblyName>
+    <RootNamespace>Miniaudio</RootNamespace>
+    <PackageId>Miniaudio</PackageId>
+    <Version>0.1.0</Version>
+    <Description>Cross-platform miniaudio bindings (engine + spatialization) for .NET.</Description>
+  </PropertyGroup>
+
+  <!-- Ship native libs under runtimes/{rid}/native both into the build output
+       (for local runs) and into the NuGet package. Populate ../../runtimes via
+       the Zig build (see build.zig / CI). -->
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\**\*.*"
+          Pack="true" PackagePath="runtimes\"
+          CopyToOutputDirectory="PreserveNewest">
+      <Link>runtimes\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+</Project>
