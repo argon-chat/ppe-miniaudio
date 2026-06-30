@@ -16,7 +16,11 @@
 #ifndef MA_WRAP_H
 #define MA_WRAP_H
 
-#if defined(__EMSCRIPTEN__)
+#if defined(MA_WRAP_STATIC)
+/* Static archive linked straight into the host image (e.g. NativeAOT): the symbols are
+ * resolved at link time, so they must NOT be dll-exported / kept as dynamic exports. */
+#  define MA_WRAP_API
+#elif defined(__EMSCRIPTEN__)
 #  include <emscripten.h>
 #  define MA_WRAP_API EMSCRIPTEN_KEEPALIVE
 #elif defined(_WIN32)

@@ -13,15 +13,43 @@
     <Description>Cross-platform miniaudio bindings (engine + spatialization) for .NET.</Description>
   </PropertyGroup>
 
-  <!-- Ship native libs under runtimes/{rid}/native both into the build output
-       (for local runs) and into the NuGet package. Populate ../../runtimes via
-       the Zig build (see build.zig / CI). -->
-  <ItemGroup>
+  <!-- ============================ Native packaging ============================
+       miniaudio's native lib ships three different ways depending on how the *consuming* build
+       is invoked. The catch: the SDK does NOT flow RuntimeIdentifier into a ProjectReference (it
+       strips RID during P2P RID-negotiation), so we can't read $(RuntimeIdentifier) here. Instead
+       the consumer passes the RID as a CUSTOM property $(MiniaudioRid) via AdditionalProperties
+       (custom props are NOT stripped). PublishAot is a real global property and flows fine.
+
+       (1) No MaRid  (`dotnet build`, restore, `dotnet pack`, or any consumer that doesn't pass it):
+           ship the whole runtimes/<rid>/native tree — the DllImport resolver picks the right
+           per-OS file at runtime, and this is exactly what goes into the .nupkg.
+       (2) MaRid + JIT  (self-contained / framework-dependent publish): copy ONLY that RID's shared
+           lib, flattened next to the app exe (no runtimes/ subfolder, no foreign-OS .so/.dylib).
+       (3) MaRid + NativeAOT: ship NO dll — the AOT root static-links lib/<rid>/miniaudio.lib.
+       Populate ../../runtimes (shared libs) and ../../lib (static libs) via build.zig. -->
+
+  <!-- (1) no MaRid → full runtimes tree (local build output + NuGet pack) -->
+  <ItemGroup Condition="'$(MiniaudioRid)' == ''">
     <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\**\*.*"
           Pack="true" PackagePath="runtimes\"
           CopyToOutputDirectory="PreserveNewest">
       <Link>runtimes\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
+  </ItemGroup>
+
+  <!-- (2) MaRid + JIT → only this RID's shared lib, flattened next to the exe -->
+  <ItemGroup Condition="'$(MiniaudioRid)' != '' and '$(PublishAot)' != 'true'">
+    <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(MiniaudioRid)\native\*.*"
+          CopyToOutputDirectory="PreserveNewest">
+      <Link>%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+  <!-- (3) MaRid + NativeAOT → ship NO shared lib. The consuming AOT root (RedPew.Player.csproj)
+       static-links lib/<rid>/miniaudio.lib via <DirectPInvoke>/<NativeLibrary> — those items can't
+       flow up from here to the parent's ILC link, so this group just suppresses the dll copy. -->
+  <ItemGroup Condition="'$(MiniaudioRid)' != '' and '$(PublishAot)' == 'true'">
+    <!-- intentionally empty: no native copied; AOT root provides the static archive -->
   </ItemGroup>
 
 </Project>
