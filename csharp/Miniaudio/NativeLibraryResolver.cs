@@ -36,7 +36,7 @@ internal static class NativeLibraryResolver
         string fileName = NativeFileName();
         string rid = Rid();
 
-        foreach (var dir in ProbeDirs(assembly))
+        foreach (var dir in ProbeDirs())
         {
             string withRid = Path.Combine(dir, "runtimes", rid, "native", fileName);
             if (File.Exists(withRid) && NativeLibrary.TryLoad(withRid, out var h1)) return h1;
@@ -49,11 +49,13 @@ internal static class NativeLibraryResolver
         return NativeLibrary.TryLoad(fileName, assembly, searchPath, out var h) ? h : IntPtr.Zero;
     }
 
-    private static IEnumerable<string> ProbeDirs(Assembly assembly)
+    private static IEnumerable<string> ProbeDirs()
     {
+        // AppContext.BaseDirectory is the app directory in every mode we ship — framework-dependent,
+        // self-contained, single-file, and NativeAOT — and is where runtimes/{rid}/native is copied.
+        // (Assembly.Location is intentionally NOT used: it returns "" in single-file/AOT → IL3000, and
+        // the OS-loader last-resort in Resolve() already covers any non-app-dir case.)
         yield return AppContext.BaseDirectory;
-        var asmDir = Path.GetDirectoryName(assembly.Location);
-        if (!string.IsNullOrEmpty(asmDir)) yield return asmDir!;
     }
 
     private static string NativeFileName()
